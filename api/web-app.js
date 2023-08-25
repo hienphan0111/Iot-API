@@ -1,9 +1,22 @@
 import { Router } from "express";
+import Data from "../models/Data.js";
 
-const router = Router();
+const routerWeb = Router();
 
-router.get('/', (req, res) => {
-  res.status(200).send('send to web app');
-});
+const getAll = async (req, res) => {
+  const records = await Data.find({});
 
-export default router;
+  if (records) {
+    res.status(200).json(records.map((item) => {
+      return {
+        id: item._id,
+        quantity: item.quantity,
+        time: item.createdAt,
+      }
+    }));
+  }
+};
+
+routerWeb.route('/').get(getAll);
+
+export default routerWeb;
